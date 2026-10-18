@@ -1,0 +1,23 @@
+# 依赖与构建产物
+node_modules/
+dist*/
+target/
+__pycache__/
+
+# 二进制 / 压缩包
+*.exe
+*.zip
+*.dll
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+
+# 本地工作目录 / 临时文件
+.workbuddy/
+*.log
+_cleanup_trash/
+
+# 构建中间副本（重生成即可）
+_clean_dist.html
+_demo_dist.html

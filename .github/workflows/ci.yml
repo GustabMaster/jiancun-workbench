@@ -1,0 +1,52 @@
+name: 简存工作台 · 自动回归测试
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 准备 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 运行全套回归测试（任一失败则标红）
+        run: |
+          fail=0
+          node tests/_bugscreen.js     || fail=1
+          node tests/_verify56.js      || fail=1
+          node tests/_verify_backup.js || fail=1
+          node tests/_verify_meta.js   || fail=1
+          node tests/_verify_rework.js || fail=1
+          node tests/_verify_bulk.js   || fail=1
+          node tests/_verify53.js      || fail=1
+          node tests/_verify54.js      || fail=1
+          node tests/_verify_vlog.js   || fail=1
+          node tests/_verify_quick.js  || fail=1
+          node tests/_verify_fuzz2.js  || fail=1
+          node tests/_verify_struct.js || fail=1
+          node tests/_verify_sync.js   || fail=1
+          node tests/_verify_ledger.js || fail=1
+          node tests/_verify_lastprice.js || fail=1
+          node tests/_verify_bulkstock.js || fail=1
+          node tests/_verify_clearadj.js || fail=1
+          node tests/_verify_cashdir.js || fail=1
+          node tests/_verify_packrename.js || fail=1
+          node tests/_verify_bizrefund.js || fail=1
+          node tests/_verify_import.js  || fail=1
+          node tests/_verify_inline.js || fail=1
+          node tests/_verify_clearcount.js || fail=1
+          node tests/_verify_backuppush.js || fail=1
+          node tests/_verify_smartdraft.js || fail=1
+          node tests/_verify_update.js || fail=1
+          node tests/_verify_smartui.js || fail=1
+          node tests/_verify_smartmisc.js || fail=1
+          node tests/_verify_closure.js || fail=1
+          exit $fail
