@@ -1,7 +1,7 @@
 # 简存·单店进销存工作台 — 版本与变更日志
 
 > 单文件零依赖 HTML，数据存浏览器 localStorage（前缀 `wb_wujin_`），部署副本 `deploy/index.html`。
-> 回退方式：v1.15.17 及以后 `git checkout vX.Y.Z` → `cp wujin-workbench.html deploy/index.html` → 重新部署（固定沙箱 `bb7ac5ada7b241bdb5af785ae37c73f2`，链接不变）；v1.14.0~v1.15.16 的 git 历史已随仓库重建丢失，请用 `E:/x/Free/wujin/vX.Y.Z/01_源码/` 发行包快照回退。
+> 回退方式：v1.15.17 及以后 `git checkout vX.Y.Z` → `cp wujin-workbench.html deploy/index.html` → 重新部署（固定的部署地址，链接不变）；v1.14.0~v1.15.16 的 git 历史已随仓库重建丢失，请用 本地发行包中的源码快照回退。
 > 语义化版本：主版本=架构不兼容；次版本=新功能/较大优化；修订=修 bug/补内容。
 
 ---
@@ -198,7 +198,7 @@
 - 16 条断言轰炸 compressImage/uploadPic/isOurPic/ourStorageBase/genPicPath/removeOurPic：坏图解码失败明确 reject、未启用云明确报错、存储网关 400/网络异常明确 reject 不崩、URL 拼装正确、自家/外部 URL 判定正确、删除仅对自己家 URL 触发。结论：链路本就健壮、无产品 bug，纯回归护网。双测试台升至 `_bugscreen` 460/0。
 
 ### 本轮回退点
-- 部署副本 `deploy/index.html` 已同步 v1.13.17，固定沙箱 `bb7ac5ada7b241bdb5af785ae37c73f2` 已重部署，链接不变。
+- 部署副本 `deploy/index.html` 已同步 v1.13.17，固定的部署地址已重部署，链接不变。
 - 回退：`git checkout v1.13.17` → `cp wujin-workbench.html deploy/index.html` → 重新部署。
 
 ---
@@ -1772,7 +1772,7 @@
 - A/B 对照：**v1.15.16 上 6 条 FAIL**（含「预填 120 应 10」「¥240/盒→应 ¥20」实锤），本版全过。
 - 全量 **15 套件 1394 PASS / 0 FAIL**（1381 + 13）；键一致性 / TDZ / 作用域哨兵全过，
   内联事件 161 个不变。
-- 发行包 `E:/x/Free/wujin/v1.15.17/`；git tag `v1.15.17`。
+- 本地发行包；git tag `v1.15.17`。
 
 ### 事故记录：本地 git 对象库损坏与重组（重要）
 
@@ -1782,7 +1782,7 @@
 - **处置**：工作树完好无损（源码/测试/文档全部在场，修复未受影响）；损坏的 `.git` 移至
   `/tmp/wujin-git-damaged-20261014` 留档；仓库重组（`git init`），以当前状态为新基线继续发版。
 - **影响**：v1.14.0~v1.15.16 的 commit/tag 对象不可恢复，`git checkout vX.Y.Z` 回退能力失效；
-  各版本源码快照在发行包 `E:/x/Free/wujin/vX.Y.Z/01_源码/` 完好，回退与 A/B 对照改走发行包副本。
+  各版本源码快照在本地发行包的源码目录完好，回退与 A/B 对照改走发行包副本。
   旧 tag→commit 映射已从 reflog 完整提取（见本轮复查报告附录），可供追溯。
 - 教训（已写入技能库）：git 写操作命令务必单独、简短执行，避免与管道/进程替换混用被中断。
 
@@ -1846,7 +1846,7 @@ qty×因子在全部路径下都与实际库存保持同一不变量，故选后
 - A/B 对照：**v1.15.15 上 18 条 FAIL**（含「实际 62 vs 应 84」「预览加 2 盒」实锤），本版全过。
 - 全量 **14 套件 1381 PASS / 0 FAIL**（1352 + 29）；键一致性 / TDZ / 作用域哨兵全过，
   内联事件 161 个不变。
-- 发行包 `E:/x/Free/wujin/v1.15.16/`；git tag `v1.15.16`。
+- 本地发行包；git tag `v1.15.16`。
 
 ### 已知限制（本轮未改，记录在案）
 
