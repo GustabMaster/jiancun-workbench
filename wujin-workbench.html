@@ -206,6 +206,8 @@
   td.sel-col{text-align:center;}
   .sel_product{width:18px;height:18px;min-width:18px;cursor:pointer;accent-color:var(--primary);vertical-align:middle;}
   .backup-bar{font-size:0.8125rem;color:var(--sub);margin-bottom:10px;text-align:right;}
+  /* 自动备份失败时升级为醒目警示：用户以为一直在备、其实一直失败，是最危险的静默故障 */
+  .backup-bar.warn{text-align:left;color:#991b1b;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:9px 12px;font-weight:600;line-height:1.6;}
   /* 专注视图（云端/额外功能/设置）：只显示标题栏 + 励志栏 + 对应面板，其余全部隐藏 */
   body.focus .today-kpi,
   body.focus .today,
@@ -1311,9 +1313,10 @@ if(typeof cfg.pinFrequent!=='boolean')cfg.pinFrequent=true;   // 「常用置顶
 /* ================= 版本号系统 ================= */
 /* 规则：大修订大更新 → +1.0 / 新功能模块 → +0.1 / 小修订微调 → +0.01
    标题右下角显示 APP_VERSION；设置面板最下方列出 VERSION_LOG 简明说明。 */
-const APP_VERSION='1.15.32';
+const APP_VERSION='1.15.33';
 const VERSION_LOG=[
   {v:'1.0.0', tag:'初版上线', desc:'四类台账（库存、收钱、流水、往来）均可记录；每日待处理事项置顶提醒；数据存于本机不丢失，支持导出备份，并可通过拍照或表格快速录入。'}
+  ,{v:'1.15.33', tag:'自动备份失败会醒目提示', desc:'① 自动备份一直失败时，首页顶部会变红提醒，说明哪一处失败、什么原因，并提示先手动导出一份；此前只在设置页显示状态，容易以为一直在备份。② 首次打开的引导说明里，一块深色底配灰字看不清，已改为浅色底深色字。'}
   ,{v:'1.15.32', tag:'备份带上整单模板 · 微信打开提醒', desc:'① 导出的备份现在会一并保存整单模板与上次客户记忆，换手机或重装后导入即可恢复，此前这两项不在备份内。② 在微信里打开会出现醒目提醒：微信会清理自己的缓存，账目可能整份消失，并给出改用浏览器的步骤。'}
   ,{v:'1.1.0', tag:'单位换算重构', desc:'「个」定为固定基准单位，螺丝、盒、件等大包装的换算关系可自行增删改名，历史数据自动迁移，不再写死。'}
   ,{v:'1.2.0', tag:'云端同步', desc:'新增云端备份同步：手机与电脑的账目自动合并；一处删除，各设备同步生效；联网时改动近乎实时同步。'}
@@ -3524,7 +3527,7 @@ function maybeOnboard(){
         '<div><b>③ 防漏账</b>：本页「今天要处理」会把低库存、逾期欠款、待办列出来提醒你。</div>'+
       '</div>'+
       '<p class="small">小提示：手机浏览器打开后，用菜单「添加到主屏幕」就能像 App 一样用。</p>'+
-      '<div class="onb-notice" style="margin-top:10px;padding:10px;background:#0f172a;border-radius:10px;">'+
+      '<div class="onb-notice" style="margin-top:10px;padding:12px;background:#f1f5f9;border:1px solid #dbe3ec;border-radius:10px;color:#1e293b;">'+
         '<p style="margin:0 0 6px;"><b>几点须知</b></p>'+
         '<p style="margin:0 0 6px;">① 数据默认存你这台设备的浏览器本地，换设备 / 清缓存不会自动带走，记得定期「设置 → 导出备份」。</p>'+
         '<p style="margin:0 0 6px;">② 本软件是独立实例：你录入的数据只属于你，与任何其他人或其他部署互不可见（除非你主动把云端账本凭据告诉他人）。</p>'+
@@ -5275,11 +5278,25 @@ function autoBackup(){
   renderBackupBar();
 }
 function renderBackupBar(){
+  const el=$('backupBar'); if(!el) return;
+  // 最高优先级：自动备份是否一直失败。这比「多久没手动备份」更紧急——
+  // 用户以为开着自动备份，其实每次都没成功，数据始终只有本机一份。
+  let failed=null;
+  try{
+    const arr=getBackups();
+    if(Array.isArray(arr)) failed=arr.find(x=>x&&x.enabled&&x.lastOk===false)||null;
+  }catch(e){}
+  if(failed){
+    el.textContent='⚠️ 自动备份失败：'+(failed.name||bkTypeLabel(failed.type))+' —— '+(failed.lastMsg||'网络或跨域错误')+'。数据目前只在本机，请到「设置 → 多地备份」检查，或先点右上角「导出备份」存一份。';
+    el.classList.add('warn');
+    return;
+  }
+  el.classList.remove('warn');
   const last=load('lastbackup',null);
   const t=todayStr();
   let txt=last?('上次备份：'+last):'尚未备份';
   if(last){const days=Math.floor((new Date(t)-new Date(last))/86400000);if(days>=BACKUP_INTERVAL)txt+='（已超过 '+days+' 天，建议点右上角立即备份）';}
-  const el=$('backupBar');if(el)el.textContent=txt;
+  el.textContent=txt;
 }
 // 数值化关键字段：外部/损坏数据（坏备份、手动改云行）可能把数字存成字符串，
 // 统一 Number() 避免显示/计算把数字当文字拼接。导入与云端合并都调用（幂等、不动 _t）。
@@ -6415,6 +6432,7 @@ function runOneBackup(id){
     t.lastBackup=Date.now(); t.lastOk=ok; t.lastMsg=ok?'':(t._lastErr||'网络或跨域错误');
     saveBackups(getBackups().map(x=>x.id===t.id?t:x));
     renderBackupTargets();
+    renderBackupBar();
     if(ok) toast('✅ 已备份到：'+(t.name||bkTypeLabel(t.type)),'ok'); else toast('⚠️ 备份失败：'+(t.lastMsg||''),'err');
   });
 }
@@ -6426,6 +6444,7 @@ function runAllBackups(){
       t.lastBackup=Date.now(); t.lastOk=ok; t.lastMsg=ok?'':(t._lastErr||'网络或跨域错误');
       saveBackups(getBackups().map(x=>x.id===t.id?t:x));
       renderBackupTargets();
+      renderBackupBar();   // 失败要让首屏那条立刻变红：静默失败的自动备份＝没有备份
     });
   });
 }

@@ -3,7 +3,7 @@
  * 仅在断网时回退到已缓存的壳，实现「断网也能秒开」。
  * 同源静态资源（图标等）走缓存优先，没命中再网络。
  */
-const CACHE = 'jiancun-shell-v1.15.32';
+const CACHE = 'jiancun-shell-v1.15.33';
 // 页面文件名随部署方式不同：deploy 目录里是 index.html，仓库根目录（GitHub Pages）里是 wujin-workbench.html。
 // 两个都列上，逐个缓存（某个不存在不影响其它），离线兜底优先产品页、再退 index.html。
 const SHELL = ['wujin-workbench.html', 'index.html', 'icon.svg', 'manifest.json', 'icon-192.png', 'icon-512.png'];
