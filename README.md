@@ -4,7 +4,7 @@
 
 打开一个网页就能记账；断网也能用；数据存在你自己的设备上，不经过任何人的服务器。
 
-![版本](https://img.shields.io/badge/version-1.15.33-0f766e)
+![版本](https://img.shields.io/badge/version-1.15.34-0f766e)
 ![测试](https://img.shields.io/badge/tests-1870%20passed-16a34a)
 ![依赖](https://img.shields.io/badge/dependencies-0-16a34a)
 ![许可](https://img.shields.io/badge/license-AGPL--3.0-blue)

@@ -4,7 +4,7 @@
 <meta charset="UTF-8" data-page-node-id="dRz0mFKEdOaAFABkUnorgh">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" data-page-node-id="lkAT3ORZouuR6Ee5QVT9Uf">
 <title>简存·单店进销存工作台</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' data-page-node-id="SwpEmQAkZShl5mQ6vwd1A7"><rect x='5' y='11' width='14' height='10' rx='2' fill='rgb(37,99,235)' data-page-node-id="0qBfGEOjD6tlBDipcNPP9b"/><path d='M8 11V8a4 4 0 0 1 8 0v3' fill='none' stroke='rgb(37,99,235)' stroke-width='2' data-page-node-id="p5U1ixu8i21kF7K5PJU8fd"/><circle cx='12' cy='15.5' r='1.6' fill='white' data-page-node-id="vWaJouJCzm38uZbM7sryq0"/><rect x='11' y='15.5' width='2' height='3.5' rx='1' fill='white' data-page-node-id="InXaPNbVJ4iAH5fgIJMfbA"/></svg>">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='11' width='14' height='10' rx='2' fill='%232563eb'/%3E%3Cpath d='M8 11V8a4 4 0 0 1 8 0v3' fill='none' stroke='%232563eb' stroke-width='2'/%3E%3Ccircle cx='12' cy='15.5' r='1.6' fill='white'/%3E%3Crect x='11' y='15.5' width='2' height='3.5' rx='1' fill='white'/%3E%3C/svg%3E">
 <style>
   :root{
     --primary:#2563eb; --primary-d:#1d4ed8; --primary-l:#eff4ff;
@@ -1313,9 +1313,10 @@ if(typeof cfg.pinFrequent!=='boolean')cfg.pinFrequent=true;   // 「常用置顶
 /* ================= 版本号系统 ================= */
 /* 规则：大修订大更新 → +1.0 / 新功能模块 → +0.1 / 小修订微调 → +0.01
    标题右下角显示 APP_VERSION；设置面板最下方列出 VERSION_LOG 简明说明。 */
-const APP_VERSION='1.15.33';
+const APP_VERSION='1.15.34';
 const VERSION_LOG=[
   {v:'1.0.0', tag:'初版上线', desc:'四类台账（库存、收钱、流水、往来）均可记录；每日待处理事项置顶提醒；数据存于本机不丢失，支持导出备份，并可通过拍照或表格快速录入。'}
+  ,{v:'1.15.34', tag:'修复首页左上角多出的一个小符号', desc:'浏览器标签页图标原先用一段内联代码写法，里面的引号把页面结构弄乱了，导致首页左上角多出一个「">」样的小符号。已改用规范写法，该符号消失，标签页图标照常显示，其余功能不受影响。'}
   ,{v:'1.15.33', tag:'自动备份失败会醒目提示', desc:'① 自动备份一直失败时，首页顶部会变红提醒，说明哪一处失败、什么原因，并提示先手动导出一份；此前只在设置页显示状态，容易以为一直在备份。② 首次打开的引导说明里，一块深色底配灰字看不清，已改为浅色底深色字。'}
   ,{v:'1.15.32', tag:'备份带上整单模板 · 微信打开提醒', desc:'① 导出的备份现在会一并保存整单模板与上次客户记忆，换手机或重装后导入即可恢复，此前这两项不在备份内。② 在微信里打开会出现醒目提醒：微信会清理自己的缓存，账目可能整份消失，并给出改用浏览器的步骤。'}
   ,{v:'1.1.0', tag:'单位换算重构', desc:'「个」定为固定基准单位，螺丝、盒、件等大包装的换算关系可自行增删改名，历史数据自动迁移，不再写死。'}
